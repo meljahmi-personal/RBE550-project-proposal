@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant SH as run.sh
+    participant CLI as bench (CLI)
+    participant RUN as Bench Runner
+    participant GU as Grid Utils
+    participant ALG as Planner (BFS/A*)
+    participant MET as Metrics/Logger
+
+    U->>SH: ./scripts/run.sh --algo astar --grid 32 --fill 0.25 --seed 42 --moves 4 --no-show
+    SH->>CLI: ros2 run rbe550_grid_bench bench [...]
+
+    CLI->>RUN: main(args) → run_bench(args)
+
+    alt ASCII map provided
+        RUN->>GU: load_grid_from_ascii(path)
+    else random grid
+        RUN->>GU: make_random_grid(size, fill, seed)
+        GU-->>RUN: grid, free start/goal (or user-specified)
+    end
+
+    RUN->>GU: neighbors_fn = neighbors4|neighbors8
+    RUN->>ALG: plan(grid, start_rc, goal_rc, neighbors_fn)
+
+    note right of ALG: BFS = queue (unweighted)<br/>A* = PQ + heuristic
+
+    ALG-->>RUN: path_rc, stats{nodes_expanded, ...}
+
+    RUN->>MET: add runtime_ms, path_len
+    MET-->>RUN: normalized stats
+
+    RUN-->>CLI: print summary (success, path_len, runtime, nodes)
+    CLI-->>U: console output / artifacts (optional)

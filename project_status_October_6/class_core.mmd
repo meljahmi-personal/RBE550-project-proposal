@@ -1,0 +1,28 @@
+classDiagram
+  class grid_utils {
+    +make_random_grid(size, fill, seed): Grid
+    +load_grid_from_ascii(path): Grid
+    +random_free_cell(grid, rng): RC
+    +neighbors4(x, y): NeighborIter
+    +neighbors8(x, y): NeighborIter
+  }
+
+  class bench_runner {
+    +run_planner(algo, grid, start, goal, moves): PathStats
+    +run_bench(args): void
+  }
+
+  class cli {
+    +main(): void
+  }
+
+  class types {
+    +PathRC
+    +PathStats
+    +Grid
+    +RC
+    +NeighborIter
+  }
+
+  cli --> bench_runner
+  bench_runner --> grid_utils

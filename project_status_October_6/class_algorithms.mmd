@@ -1,0 +1,33 @@
+classDiagram
+  class BasePlanner {
+    +name: str
+    +plan(obst, startXY, goalXY, neighbors_fn): PathStats
+  }
+
+  class PlanResult {
+    +success: bool
+    +path: PathRC
+    +nodes_expanded: int
+    +peak_open: int
+    +cost: float
+  }
+
+  class BFSPlanner
+  class AStarPlanner {
+    -hfun(a, b): float
+  }
+
+  class bfs_facade {
+    +plan(grid_rc, start_rc, goal_rc, neighbors_fn): PathStats
+  }
+
+  class astar_facade {
+    +plan(grid_rc, start_rc, goal_rc, neighbors_fn): PathStats
+  }
+
+  BasePlanner <|-- BFSPlanner
+  BasePlanner <|-- AStarPlanner
+  bfs_facade --> BFSPlanner
+  astar_facade --> AStarPlanner
+  BFSPlanner --> PlanResult
+  AStarPlanner --> PlanResult

@@ -1,0 +1,28 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam dpi 300
+
+actor "User/CLI" as user
+node "ROS 2 Workspace" {
+  component "bench (CLI)" as bench
+  component "Bench Runner\n(bench_runner.py)" as runner
+  package "Algorithms" {
+    component "BFS (bfs.py)"
+    component "A* (astar.py)"
+    component "Dijkstra (planned)"
+    component "Theta* (planned)"
+    component "JPS (planned)"
+  }
+  package "Utilities" {
+    component "Grid Utils\n(random, ASCII,\nneighbors4/8)"
+    component "Metrics & Logging\n(runtime, nodes,\npath len, memory)"
+  }
+}
+user --> bench : ./scripts/run.sh\nros2 run ... bench [...]
+bench --> runner : parse args → run_bench()
+runner --> "Grid Utils\n(random/ASCII)" : build grid, pick start/goal
+runner --> Algorithms : select algo.plan(grid,start,goal,neighbors)
+Algorithms --> runner : path, stats
+runner --> "Metrics & Logging\n(...)" : record & print
+runner --> user : console output / artifacts
+@enduml

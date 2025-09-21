@@ -1,0 +1,39 @@
+flowchart TB
+    user(["User / CLI"])
+
+    subgraph ROS2["ROS 2 Workspace"]
+        bench["bench (CLI)"]
+        runner["Bench Runner (bench_runner.py)"]
+
+        subgraph ALGOS["Algorithms"]
+            bfs["BFS (bfs.py)"]
+            astar["A* (astar.py)"]
+            dij["Dijkstra (planned)"]
+            theta["Theta* (planned)"]
+            jps["JPS (planned)"]
+        end
+
+        subgraph UTILS["Utilities"]
+            gu["Grid Utils (random, ASCII, neighbors4/8)"]
+            met["Metrics & Logging (runtime, nodes, path, mem)"]
+        end
+    end
+
+    user --> bench
+    bench --> runner
+    runner --> gu
+
+    runner --> bfs
+    runner --> astar
+    runner --> dij
+    runner --> theta
+    runner --> jps
+
+    bfs --> runner
+    astar --> runner
+    dij --> runner
+    theta --> runner
+    jps --> runner
+
+    runner --> met
+    runner --> user
